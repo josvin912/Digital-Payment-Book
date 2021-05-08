@@ -6,11 +6,13 @@ Created on Mon Apr 26 18:53:30 2021
 """
 
 
+
 class UserModel:
     
     def __init__(self,dbobj):
         
         self.dbobj = dbobj
+
     
     def validate_user(self,username,password):
         
@@ -34,7 +36,7 @@ class UserModel:
         else:
             cursor = self.dbobj.connection.cursor()
             cursor.execute('INSERT INTO login VALUES ( % s, % s, % s,%s)', (username,password,email,'user'))
-            cursor.execute('INSERT INTO userdetails(username,name) VALUES ( % s,% s)', (username,name))
+            cursor.execute('INSERT INTO userdetails(username,name,address,profile_pic_url,phone) VALUES ( % s,% s,% s,% s,% s)', (username,name," "," "," "))
             cursor.execute('INSERT INTO notification VALUES ( NULL,NOW(), % s, % s,% s,% s)',(username,"Profile Completion","Please Complete Your Profile Details","new"))
             self.dbobj.connection.commit()
             self.dbobj.connection.commit()
@@ -183,7 +185,7 @@ class UserModel:
      
     def dash_purchase_trend(self,username):
         cursor = self.dbobj.connection.cursor()
-        cursor.execute('SELECT MONTHNAME(purchase_date),COUNT(*) FROM purchase WHERE username = % s GROUP BY MONTH(purchase_date)' ,(username,))
+        cursor.execute('SELECT T.MON,COUNT(*) FROM (SELECT MONTHNAME(purchase_date) AS MON FROM purchase WHERE username = % s) AS T GROUP BY T.MON' ,(username,))
         account = cursor.fetchall()
         return account
     
@@ -238,7 +240,7 @@ class UserModel:
         
     def admin_dash_purchase_trend(self):
         cursor = self.dbobj.connection.cursor()
-        cursor.execute('SELECT MONTHNAME(purchase_date),COUNT(*) FROM purchase GROUP BY MONTH(purchase_date)')
+        cursor.execute('SELECT T.MON,COUNT(*) FROM (SELECT MONTHNAME(purchase_date) AS MON FROM purchase) AS T GROUP BY T.MON')
         account = cursor.fetchall()
         return account
     
