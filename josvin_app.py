@@ -295,7 +295,13 @@ def analytics():
      count=user_model.get_unsolved_complaints()
      values = user_model.admin_dash_purchase_details()
      trend = user_model.admin_dash_purchase_trend()
-     return render_template('analytics.html',count=count[0],values=values,trend=trend)
+     if request.method == 'POST' :
+         month = request.form['month']
+         predictor.loadData()
+         predictor.buildModel()
+         predictor.saveModel()
+         pvalue=predictor.predict(month)
+     return render_template('analytics.html',count=count[0],values=values,trend=trend,pvalue=pvalue)
     
 
 

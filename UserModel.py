@@ -267,8 +267,13 @@ class UserModel:
              return account
         else:
             return None
-    
+    def get_month_diff(self,month):
+         cursor = self.dbobj.connection.cursor()
+         cursor.execute('SELECT T.MON,COUNT(*) FROM (SELECT MONTHNAME(purchase_date) AS MON FROM purchase) AS T GROUP BY T.MON')
+         account = cursor.fetchall()
+         return account
         
+
         
          
          
