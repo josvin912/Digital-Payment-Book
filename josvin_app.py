@@ -12,6 +12,7 @@ import MySQLdb.cursors
 import re
 from UserModel import UserModel
 from util import MailClient
+from analyzer import Predictor
 app = Flask(__name__)
 app.secret_key = 'a'
 
@@ -23,8 +24,15 @@ app.config['MYSQL_DB'] = "lxtJiysGzR"
 mysql = MySQL(app)
 user_model = UserModel(mysql)
 mailobj = MailClient()
+predictor=Predictor(user_model)
 @app.route('/')#app.route(rule,options)
 def homer():
+    
+    predictor.loadData()
+    predictor.buildModel()
+    predictor.saveModel()
+    #y=predictor.predict(10)
+    #print("predicted value =",y)
     
     return render_template('home.html')
     
@@ -277,8 +285,19 @@ def purchases():
             status = "complete"
         status="pending"
         user_model.admin_billing(username,date,tamount,payingamt,bamount,particulars,status)
+        predictor.loadData()
+        predictor.buildModel()
+        predictor.saveModel()
     return render_template('/purchases.html',count=count[0],details=details)
+
+@app.route('/analytics')
+def analytics():
+     count=user_model.get_unsolved_complaints()
+     values = user_model.admin_dash_purchase_details()
+     trend = user_model.admin_dash_purchase_trend()
+     return render_template('analytics.html',count=count[0],values=values,trend=trend)
+    
 
 
 if __name__ == '__main__':
-    app.run(debug=True,port=8080)#run in the webbrowser
+    app.run(host='0.0.0.0',port=8080)#run in the webbrowser
