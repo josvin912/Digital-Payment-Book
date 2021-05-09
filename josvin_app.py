@@ -290,17 +290,19 @@ def purchases():
         predictor.saveModel()
     return render_template('/purchases.html',count=count[0],details=details)
 
-@app.route('/analytics')
+@app.route('/analytics',methods =['GET', 'POST'])
 def analytics():
      count=user_model.get_unsolved_complaints()
      values = user_model.admin_dash_purchase_details()
      trend = user_model.admin_dash_purchase_trend()
+     pvalue=""
      if request.method == 'POST' :
-         month = request.form['month']
+         pdate = request.form['pdate']
          predictor.loadData()
          predictor.buildModel()
          predictor.saveModel()
-         pvalue=predictor.predict(month)
+         months = user_model.get_month_diff(pdate)
+         pvalue=predictor.predict(months)
      return render_template('analytics.html',count=count[0],values=values,trend=trend,pvalue=pvalue)
     
 
