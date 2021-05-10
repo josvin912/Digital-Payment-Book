@@ -23,12 +23,12 @@ class Predictor:
         print(self.y)'''
     def buildModel(self):
         self.model=SVR(kernel="poly",degree=3,C=1.0)
-        self.model.fit(self.x,self.y)
+        self.model=self.model.fit(self.x,self.y)
     def loadModel(self):
         dbfile = open(self.modelpath, 'rb')     
         self.model = pickle.load(dbfile)
     def saveModel(self):
-        dbfile = open(self.modelpath, 'ab')
+        dbfile = open(self.modelpath, 'wb')
         pickle.dump(self.model, dbfile)
     def predict(self,x):
         self.loadModel()

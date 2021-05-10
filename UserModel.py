@@ -4,7 +4,7 @@ Created on Mon Apr 26 18:53:30 2021
 
 @author: HP
 """
-
+from datetime import datetime
 
 
 class UserModel:
@@ -267,11 +267,14 @@ class UserModel:
              return account
         else:
             return None
-    def get_month_diff(self,date):
+    def get_month_diff(self,pdate):
          cursor = self.dbobj.connection.cursor()
-         cursor.execute('SELECT TIMESTAMPDIFF(MONTH,(SELECT MIN(purchase_date) from purchase),%s)',[date])
-         account = cursor.fetchall()
-         return account[0]
+         sdate = datetime.strptime(pdate,'%Y-%m-%d')
+         ssdate = sdate.strftime('%Y-%m-%d')
+         print(sdate,type(sdate),ssdate)
+         cursor.execute('SELECT TIMESTAMPDIFF(MONTH,(SELECT MIN(purchase_date) from purchase),%s)',(ssdate,))
+         account = cursor.fetchone()
+         return int(account[0])
         
 
         
