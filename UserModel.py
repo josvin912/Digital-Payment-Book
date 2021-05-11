@@ -68,7 +68,7 @@ class UserModel:
         if account:
             return account, ['Date','Particulars','Total Amount','Paid Amount','Balance Amount','Status']
         else:
-            return None
+            return [],['Date','Particulars','Total Amount','Paid Amount','Balance Amount','Status']
         
     def get_pending_payments(self,username):
         cursor = self.dbobj.connection.cursor()
@@ -110,7 +110,7 @@ class UserModel:
         if account:
             return account, ['Complaint ID','Date','Message','Status']
         else:
-            return None
+            return [],['Complaint ID','Date','Message','Status']
         
     def solve_user_complaints(self):
         cursor = self.dbobj.connection.cursor()

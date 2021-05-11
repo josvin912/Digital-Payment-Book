@@ -1,16 +1,12 @@
-FROM python:3.8-alpine
+FROM ubuntu:latest
+
+RUN apt-get update -y
+
+RUN apt-get install -y python3-pip python3-dev build-essential libmysqlclient-dev
+
 WORKDIR /app
 ADD . /app
 
-RUN set -e; \
-        apk add --no-cache --virtual .build-deps \
-                gcc \
-                libc-dev \
-                linux-headers \
-                mariadb-dev \
-                python3-dev \
-                postgresql-dev \
-        ;
 COPY requirements.txt /app
-RUN pip install --upgrade pip -r requirements.txt
-CMD ["python","josvin_app.py"]
+RUN pip3 install -r requirements.txt
+CMD ["python3","josvin_app.py"]
